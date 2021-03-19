@@ -24,11 +24,15 @@ public class WebSocketServer {
 
     // 连接客户端数量
     private static int onlineCount = 0;
+
     // 所有的连接客户端
     private static Map<String, WebSocketServer> clients = new ConcurrentHashMap<String, WebSocketServer>();
+
     // 当前客户端连接的唯一标示
     private Session session;
+
     private static CopyOnWriteArraySet<WebSocketServer> webSocketSet = new CopyOnWriteArraySet<WebSocketServer>();
+
     // 当前客户端连接的用户ID
     private String userId;
 
@@ -131,4 +135,5 @@ public class WebSocketServer {
     public static synchronized Map<String, WebSocketServer> getClients() {
         return clients;
     }
+
 }
