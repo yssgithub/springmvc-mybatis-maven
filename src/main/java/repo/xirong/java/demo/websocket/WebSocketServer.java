@@ -1,5 +1,7 @@
 package repo.xirong.java.demo.websocket;
 
+import com.alibaba.fastjson.JSONObject;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Component;
@@ -12,6 +14,7 @@ import javax.websocket.Session;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
@@ -87,6 +90,52 @@ public class WebSocketServer {
     public void onMessage(String message) throws IOException {
         System.out.println("WebSocket日志: 来自客户端的消息:" + message);
         log.info("服务端：接收到客户端信息【"+message+"】");
+    }
+
+    /**
+     * 根据消息中的To(发送对象)发送消息
+     * 如果是All则表示广播,否则发送给指定对象
+     * to:消息接收人
+     * data:可是普通字符串消息,也可以是图片的BASE64,也可以是json的字符串形式
+     */
+    public void sendWebSocketMessage(String message) {
+//        JSONObject jsonObject = JSONObject.parseObject(message, JSONObject.class);
+        JSONObject jsonObject = JSONObject.parseObject(message);
+        sendWebSocketMessage(jsonObject);
+    }
+
+    /**
+     * 根据消息中的To(发送对象)发送消息
+     * 如果是All则表示广播,否则发送给指定对象
+     * to:消息接收人
+     * data:可是普通字符串消息,也可以是图片的BASE64,也可以是json的字符串形式
+     */
+    public void sendWebSocketMessage(Map<String, Object> messageMap) {
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("to", messageMap.get("to"));
+        jsonObject.put("data", messageMap.get("data"));
+        sendWebSocketMessage(jsonObject);
+    }
+
+    /**
+     * 根据消息中的To(发送对象)发送消息
+     * 如果是All则表示广播,否则发送给指定对象
+     * to:消息接收人
+     * data:可是普通字符串消息,也可以是图片的BASE64,也可以是json的字符串形式
+     */
+    public void sendWebSocketMessage(JSONObject jsonObject) {
+        if (StringUtils.isEmpty(jsonObject.getString("to"))
+            || StringUtils.isEmpty(jsonObject.getString("data"))) {
+            log.error("消息缺失接收人或消息内容");
+            return;
+        }
+        String message = jsonObject.getString("data");
+        String to = jsonObject.getString("to");
+        if (!"All".equals(to)) {
+            sendMessage(to, message);
+        } else {
+            sendMessage(message);
+        }
     }
 
     /**
