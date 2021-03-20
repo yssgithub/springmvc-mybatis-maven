@@ -31,6 +31,7 @@ public class WebSocketServer {
     // 当前客户端连接的唯一标示
     private Session session;
 
+    // 线程安全的集合类
     private static CopyOnWriteArraySet<WebSocketServer> webSocketSet = new CopyOnWriteArraySet<WebSocketServer>();
 
     // 当前客户端连接的用户ID
@@ -45,14 +46,23 @@ public class WebSocketServer {
      */
     @OnOpen
     public void onOpen(@PathParam("userId") String userId, Session session) throws IOException {
+        // 设置超时时间
+        session.setMaxIdleTimeout(3600000);
+        // 用户标识
         this.userId = userId;
+        // 用户session
         this.session = session;
-
+        // 往集合添加,广播用
         webSocketSet.add(this);
-        addOnlineCount();
+        // 往Map添加,定向发送用
         clients.put(userId, this);
-        System.out.println("WebSocket日志: 有新连接加入！当前在线人数为" + getOnlineCount());
-        sendMessage("建立了连接");
+        // 连接数添加
+        addOnlineCount();
+        System.out.println("WebSocket日志: 有新连接"+userId+"加入！当前在线人数为" + getOnlineCount());
+        // 广播
+        sendMessage(userId+"建立了连接");
+        // 定向发送
+        sendMessage(userId, "你好"+userId+",我们建立了连接");
     }
 
     @OnClose
@@ -61,6 +71,10 @@ public class WebSocketServer {
         clients.remove(userId);
         subOnlineCount();
         System.out.println("WebSocket日志: 有一连接关闭！当前在线人数为" + getOnlineCount());
+        // 广播
+        sendMessage(userId+"断开了连接");
+        // 定向发送
+        sendMessage(userId, "你好"+userId+",期待我们下次再见");
     }
 
     /**

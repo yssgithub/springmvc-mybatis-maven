@@ -8,7 +8,15 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>Title</title>
+    <title>home</title>
+    <!-- 引入 JQuery  -->
+    <script type="text/javascript" src="../js/jquery-1.8.3.js"></script>
+
+    <!-- 引入 sockJS  -->
+    <script type="text/javascript" src="../js/sockjs.min.js" ></script>
+
+    <!-- 自定义JS文件 -->
+    <script type="text/javascript" src="../js/home.js"></script>
 </head>
 <body>
     home.jsp

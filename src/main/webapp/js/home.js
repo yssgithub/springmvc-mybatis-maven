@@ -5,7 +5,7 @@ $(function() {
 
     // 首先判断是否 支持 WebSocket
     if('WebSocket' in window) {
-        websocket = new WebSocket("ws://localhost:8085/springmvc/websocket/index123");
+        websocket = new WebSocket("ws://localhost:8085/springmvc/websocket/home123");
         // websocket = new WebSocket("ws://localhost:8085/springmvc/websocketHandler/123");
     } else if('MozWebSocket' in window) {
         websocket = new MozWebSocket("ws://localhost:8085/springmvc/websocket/123");

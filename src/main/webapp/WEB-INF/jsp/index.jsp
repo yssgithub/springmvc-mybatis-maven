@@ -8,7 +8,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>Title</title>
+    <title>index</title>
     <!-- 引入 JQuery  -->
     <script type="text/javascript" src="../js/jquery-1.8.3.js"></script>
 
